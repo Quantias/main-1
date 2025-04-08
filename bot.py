@@ -8,7 +8,6 @@ from telethon.tl.types import SendMessageTypingAction
 from telethon.tl.functions.contacts import BlockRequest
 from collections import defaultdict
 
-
 api_id = 20363060
 api_hash = '97b41b4af4696c29091e31326bc2bd50'
 
@@ -26,16 +25,18 @@ def load_sent_users():
     users = set()
     if os.path.exists(SENT_USERS_FILE):
         with open(SENT_USERS_FILE, 'r') as f:
-            lines = f.read().splitlines()
-        cleaned_lines = []
-        for line in lines:
-            line = line.strip()
-            if line.isdigit():
-                users.add(int(line))
-                cleaned_lines.append(line)
-        with open(SENT_USERS_FILE, 'w') as f:
-            f.write('\n'.join(cleaned_lines))
+            for line in f:
+                line = line.strip()
+                if line and line.split('. ', 1)[-1].isdigit():
+                    users.add(int(line.split('. ', 1)[-1]))
     return users
+
+def get_next_user_number():
+    if not os.path.exists(SENT_USERS_FILE):
+        return 1
+    with open(SENT_USERS_FILE, 'r') as f:
+        lines = f.readlines()
+    return len(lines) + 1
 
 sent_users = load_sent_users()
 
@@ -50,14 +51,14 @@ async def handler(event):
 
     SPAM_COUNTS[user_id] += 1
 
-    if SPAM_COUNTS[user_id] == 15 and user_id not in WARNED_USERS:
+    if SPAM_COUNTS[user_id] == 150 and user_id not in WARNED_USERS:
         await event.respond("Пожалуйста, не спамь. Следующее сообщение — и я тебя заблокирую 🥺")
         WARNED_USERS.add(user_id)
         with open(SPAM_LOG_FILE, 'a', encoding='utf-8') as f:
             f.write(f'⚠️ Варн нахуй: {username} (ID: {user_id})\n')
         return
 
-    if user_id in WARNED_USERS and SPAM_COUNTS[user_id] > 15:
+    if user_id in WARNED_USERS and SPAM_COUNTS[user_id] > 160:
         await event.respond("Ты продолжаешь спамить,отдохни в бане)")
         await client(BlockRequest(user_id))
         with open(BLOCKED_USERS_FILE, 'a', encoding='utf-8') as f:
@@ -69,11 +70,12 @@ async def handler(event):
 
     try:
         sent_users.add(user_id)
+        number = get_next_user_number()
         with open(SENT_USERS_FILE, 'a') as f:
-            f.write(f'{user_id}\n')
+            f.write(f'{number}. {user_id}\n')
 
         await client(SetTypingRequest(event.chat_id, SendMessageTypingAction()))
-        await asyncio.sleep(random.uniform(2.5, 3.5))
+        await asyncio.sleep(random.uniform(3, 4))
 
         await client.send_message(
             event.chat_id,
@@ -87,7 +89,7 @@ async def handler(event):
             (
                 "**Задание 1 😊**\n\n"
                 "Зайди в бота, выполни одно задание и нажми на \"Проверить ✅\" → "
-                "[жмяк](https://t.me/treasury_official_bot/app?startapp=5094540706)\n\n"
+                "[жмяк](http://t.me/StarsovEarnBot?start=xVh5ZASi3)\n\n"
                 "Отправь скрин подписки на каналы ❤️"
             ),
             parse_mode='md',
@@ -107,7 +109,7 @@ async def handler(event):
                 "❗ ОБЯЗАТЕЛЬНЫЕ УСЛОВИЯ:\n"
                 "1. ЛАЙКАЙ СВОИ КОММЕНТАРИИ\n\n"
                 "2. НАПИШИ 15 ТЕКСТОВ *(1 текст на 1 видео)* И ОТПРАВЬ СКРИНЫ КАЖДОГО ТЕКСТА\n\n"
-                "3. ЛАЙКАЙ **ВСЕ** ТЕКСТА ОТ ДРУГИХ ЛЮДЕЙ С НИКОМ Crylinge\n"
+                "3. ЛАЙКАЙ **ВСЕ** ТЕКСТЫ ОТ ДРУГИХ ЛЮДЕЙ С НИКОМ Crylinge\n"
                 "*(если увижу на скрине где хотя бы один коммент не лайкнут - подарка не будет)*\n\n"
             ),
             parse_mode='md',

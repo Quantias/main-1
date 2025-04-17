@@ -1,0 +1,7 @@
+Username: arina1876, ID: 5610201572, Error: A wait of 477 seconds is required (caused by SendMessageRequest)
+Username: Fanatca_Edisona, ID: 7243088240, Error: A wait of 477 seconds is required (caused by SendMessageRequest)
+Username: kwerixe10_11_23, ID: 5057017309, Error: A wait of 476 seconds is required (caused by SendMessageRequest)
+Username: Diororp, ID: 6356779089, Error: A wait of 476 seconds is required (caused by SendMessageRequest)
+Username: Gkvcjjg, ID: 6456566146, Error: A wait of 476 seconds is required (caused by SendMessageRequest)
+Username: V9n1x, ID: 7691138946, Error: A wait of 470 seconds is required (caused by SendMessageRequest)
+Username: GraZyy_so2, ID: 6992391715, Error: A wait of 154 seconds is required (caused by SendMessageRequest)
